@@ -15,14 +15,17 @@ def data_mode(data, mode='abs'):
     else: raise ValueError('Unrecognized plot mode.')
     return data
 
-def waterfall(d, mode='log', mx=None, drng=None, recenter=False, **kwargs):
+def waterfall(d, mode='log', mx=None, drng=None, recenter=False, ax=None, **kwargs):
     if np.ma.isMaskedArray(d): d = d.filled(0)
     if recenter: d = a.img.recenter(d, np.array(d.shape)/2)
     d = data_mode(d, mode=mode)
     if mx is None: mx = d.max()
     if drng is None: drng = mx - d.min()
     mn = mx - drng
-    return plt.imshow(d, vmax=mx, vmin=mn, aspect='auto', interpolation='nearest', **kwargs)
+    if ax is None:
+        return plt.imshow(d, vmax=mx, vmin=mn, aspect='auto', interpolation='nearest', **kwargs)
+    else:
+        return ax.imshow(d, vmax=mx, vmin=mn, aspect='auto', interpolation='nearest', **kwargs)
 
 def plot_hmap_ortho(h, cmap='jet', mode='log', mx=None, drng=None, 
         res=0.25, verbose=False, normalize=False):
